@@ -9,7 +9,7 @@ from word_management import *
 load_dotenv()  # Carrega as variáveis ambiente
 
 def main():
-    ...
+    interface = Interface()
 
 
 if __name__ == "__main__":

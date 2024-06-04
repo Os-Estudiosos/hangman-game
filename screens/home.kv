@@ -1,0 +1,24 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+<HomeScreen>:
+    name: 'home'
+
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    MDLabel:
+        text: 'JOGO DA FORCA XoX'
+        pos_hint: { 'left': 0.5 }
+
+    MDButton:
+        pos_hint: { 'center_x': 0.5, 'center_y': 0.5 }
+        on_press:
+            root.manager.transition = FadeTransition()
+            root.manager.current = 'game'
+        
+        MDButtonText:
+            text: 'GAME'
