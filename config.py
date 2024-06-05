@@ -1,3 +1,5 @@
+# Mudar o campo difficulty para inteiros de 1 a 5 (inclusos)
+
 import json
 
 def change_config(difficulty, letters, language, music):
@@ -17,7 +19,7 @@ def change_config(difficulty, letters, language, music):
     config_dict = {
         "difficulty": difficulty,
         "letters": letters,
-        "Language": language,
+        "language": language,
         "music": music
     }
 
