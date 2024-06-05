@@ -16,14 +16,14 @@
             <canvas id="hangman-frame" width="400" height="250" class="border"></canvas>
             <div class="flex items-center justify-center flex-col gap-5 min-h-24 p-4">
                 <p id="hint-container"></p>
-                <form id="letters-form">
-                    <ul id="letters-container" class="flex items-center justify-center gap-4">
+                <form id="theme-form">
+                    <ul id="theme-container" class="flex items-center justify-center gap-4">
                     </ul>
 
                     <div class="flex items-center justify-center gap-1 flex-col">
                         <input id="letter-input" class="mt-6 border text-lg font-bold border-gray-300 focus:outline-gray-400 rounded-sm w-auto h-10 text-center letter-input" type="text" id="letter-0">
                         <button type="submit" class="bg-sky-500 text-center p-3 text-sm rounded-md text-white font-bold hover:bg-sky-600 active:bg-sky-700 transition-all">CHECAR LETRA/PALAVRA</button>
-                        <ul id="wrong-letters-list" class="flex items-center justify-center mt-5 gap-5">
+                        <ul id="wrong-theme-list" class="flex items-center justify-center mt-5 gap-5">
                         </ul>
                     </div>
                 </form>
@@ -34,7 +34,7 @@
         <div id="over-screen" class="bg-white p-3 rounded-md fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2" style="display: none;">
             <h1 id="over-title" class="text-center text-lg font-bold"></h1>
             <p id="over-text" class="text-center"></p>
-            <p class="text-center">Você quer tentar de novo ou jogar novamente?</p>
+            <p class="text-center">Você quer tentar de novo ou sair?</p>
             <div class="mt-5 flex items-center justify-center gap-3">
                 <a href="/" class="bg-sky-500 text-center p-3 text-sm rounded-md text-white font-bold hover:bg-sky-600 active:bg-sky-700 transition-all">VOLTAR</a>
                 <a href="#" class="bg-rose-500 text-center p-3 text-sm rounded-md text-white font-bold hover:bg-rose-600 active:bg-rose-700 transition-all" onclick="location.reload()">TENTAR DE NOVO</a>
@@ -102,46 +102,67 @@
         }
 
         /* FUNÇÃO QUE VAI CHAMAR A PALAVRA DA API */
-        function chamar_palavra() {
-            const response = {
-                word: 'PARALELEPIPEDO',
-                hint: 'Forma geométrica com que todos os ângulos são retos'
+        async function chamar_palavra() {
+            const configs = {
+                language: localStorage.getItem('language'),
+                difficulty: localStorage.getItem('difficulty'),
+                theme: localStorage.getItem('theme')
             }
+            const response = {}
+            await $.ajax({
+                'url': `http://127.0.0.1:5000/api/catch_word?language=${configs.language}&difficulty=${configs.difficulty}&theme=${configs.theme}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    console.log(res)
+                    response.word = res.word
+                    localStorage.setItem('actual_word', res.word)
+                    $('#hint-container').text(res.hint)
+                },
+                error: function(err) {
+                    console.log(err)
+                },
+            })
             const lifes = 6
 
-            localStorage.setItem('actual_word', response.word)
             localStorage.setItem('lifes', lifes)
-            $('#hint-container').text(response.hint)
             $('#lifes-container').text(`Quantidade de vidas: ${lifes}`)
+
+            return response.word
         }
 
         /* FUNÇÃO QUE VAI CHECAR SE A LETRA ESTÁ NA PALAVRA */
-        function checar_letra(letra_frase) {
-            const palavra = localStorage.getItem('actual_word')
+        async function checar_letra(palavra, letra_frase) {
+            const response = {}
 
-            if (letra_frase.length == 1) {
-                const indices = []
-                for (let i = 0; i < palavra.length; i++) {
-                    if (palavra[i] === letra_frase) {
-                        indices.push(i)
-                    }
-                }
+            // Checagem da letra pela a API
+            await $.ajax({
+                'url': `http://127.0.0.1:5000/api/check-word`,
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                traditional: true,
+                data: JSON.stringify({
+                    word: palavra,
+                    content: $('#letter-input').val()
+                }),
+                success: function(res) {
+                    response.body = res
+                },
+                error: function(err) {
+                    console.log(err)
+                },
+            })
 
-                return indices
-            } else if (letra_frase == palavra) {
-                return ({
-                    win: true
-                })
-            }
+            return response.body
         }
 
         /* FUNÇÃO QUE COLOCA A QUANTIDADE CORRETA DE INPUTS NA TELA */
-        function set_correct_inputs() {
-            const letters = Number(localStorage.getItem('letters'))
+        function set_correct_inputs(palavra) {
+            const word_length = palavra.length
             
-            for (let i = 0; i<letters; i++) {
-                $('#letters-container').append(`
-                    <li id="letter-${i}" class="border-b border-black text-4xl w-12 h-12 flex items-center justify-center">
+            for (let i = 0; i<word_length; i++) {
+                $('#theme-container').append(`
+                    <li id="letter-${i}" class="fixed-theme border-b border-black text-4xl w-12 h-12 flex items-center justify-center">
                         
                     </li>
                 `)
@@ -159,18 +180,21 @@
         }
 
         // Código inicial
-        $('body').ready(function() {
-            chamar_palavra()
-            set_correct_inputs()
+        $('body').ready(async function() {
+            const palavra = await chamar_palavra()
+            set_correct_inputs(palavra)
             draw_gibbet()
         })
 
         // Quando enviar a letra
-        $('#letters-form').on('submit', function(e) {
+        $('#theme-form').on('submit', async function(e) {
             e.preventDefault()  // Previne de enviar o formulário
             // Local onde vai checar se a letra está correta
-            const response = checar_letra($('#letter-input').val())  // Checo se a palavra possui a letra
+            const palavra = localStorage.getItem('actual_word')
+            const response = await checar_letra(palavra, $('#letter-input').val())  // Checo se a palavra possui a letra
             let lifes = localStorage.getItem('lifes')  // Pego as vidas no armazenamento local
+
+            console.log(response)
 
             /* EASTER EGG */
             if ($('#letter-input').val() == "CUPINTO") {
@@ -178,13 +202,13 @@
             }
 
             // Se o jogador não ganhou
-            if (response.length > 0) {  // Se o jogador acertou alguma letra
-                for (let index of response) {
+            if (response.index_s.length > 0) {  // Se o jogador acertou alguma letra
+                for (let index of response.index_s) {
                     $(`#letter-${index}`).text($('#letter-input').val())
                 }
             } else {  // Se o jogador não acertou nenhuma letra
                 localStorage.setItem('lifes', lifes - 1)  // Seto a variável local com 1 valor a menos
-                $('#wrong-letters-list').append(`
+                $('#wrong-theme-list').append(`
                     <li class="font-bold text-lg">
                         ${$('#letter-input').val()}
                     </li>
@@ -193,7 +217,19 @@
                 draw_body_part(lifes-1)
             }
 
-            if (response.win) {  // Se o jogador ganhou
+            // Checagem de letra por letra
+            let texto_inteiro = ""
+            for (let element of $('.fixed-theme')) {
+                texto_inteiro+=element.innerText
+                console.log(texto_inteiro)
+
+                if (texto_inteiro.toUpperCase() == palavra.toUpperCase()) {
+                    over('VOCÊ GANHOU')
+                    return
+                }
+            }
+
+            if (response.variavel == "venceu") {  // Se o jogador ganhou
                 over('VOCÊ GANHOU')
                 return
             } else if (lifes - 1 == 0) {  // Se o jogador perdeu

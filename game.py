@@ -21,7 +21,7 @@ def check_word(palavra, content):
     if(content == temp_s):
         return{"variavel" : "venceu", "index_s" : [] }
 
-    variavel = "false"
+    variavel = False
     
     index_s = []
         
@@ -31,10 +31,10 @@ def check_word(palavra, content):
     for char in temp_s:
         if(char == content):
             index_s.append(index)
-            variavel = "true"
+            variavel = True
         index += 1
     
     # Retorno uma lista com True (posições que a letra está) e False 
-    return {"variavel": variavel,"index_s": index_s}           
+    return {"variavel": variavel,"index_s": index_s}
 
 

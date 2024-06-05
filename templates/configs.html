@@ -39,53 +39,22 @@
                 </ul>
             </div>
             <div class="flex flex-col w-full">
-                <label class="font-bold text-lg" for="letters">Número de Letras</label>
-                <input id="letters" type="number" class="border p-3 rounded-md h-12" min="0">
+                <label class="font-bold text-lg" for="theme">Tema</label>
+                <input id="theme" type="text" class="border p-3 rounded-md h-12">
             </div>
             <div class="flex flex-col w-full">
                 <label class="font-bold text-lg" for="language">Idioma</label>
                 <select class="border p-3 rounded-md bg-white h-12" id="language" name="language">
-                    <option value="af">Africâner</option>
-                    <option value="sq">Albanês</option>
-                    <option value="de">Alemão</option>
-                    <option value="am">Amárico</option>
-                    <option value="ar">Árabe</option>
-                    <option value="hy">Armênio</option>
-                    <option value="az">Azerbaijano</option>
-                    <option value="bn">Bengali</option>
-                    <option value="bs">Bósnio</option>
-                    <option value="bg">Búlgaro</option>
-                    <option value="ca">Catalão</option>
-                    <option value="zh">Chinês</option>
-                    <option value="ko">Coreano</option>
-                    <option value="hr">Croata</option>
-                    <option value="da">Dinamarquês</option>
-                    <option value="sk">Eslovaco</option>
-                    <option value="sl">Esloveno</option>
-                    <option value="es">Espanhol</option>
-                    <option value="et">Estoniano</option>
-                    <option value="fi">Finlandês</option>
-                    <option value="fr">Francês</option>
-                    <option value="el">Grego</option>
-                    <option value="he">Hebraico</option>
-                    <option value="hi">Hindi</option>
-                    <option value="hu">Húngaro</option>
-                    <option value="is">Islandês</option>
-                    <option value="id">Indonésio</option>
-                    <option value="it">Italiano</option>
-                    <option value="en">Inglês</option>
-                    <option value="ja">Japonês</option>
-                    <option value="ka">Georgiano</option>
-                    <option value="jv">Javanês</option>
-                    <option value="lv">Letão</option>
-                    <option value="lt">Lituano</option>
-                    <option value="mk">Macedônio</option>
-                    <option value="ms">Malaio</option>
-                    <option value="nl">Holandês</option>
-                    <option value="no">Norueguês</option>
-                    <option value="fa">Persa</option>
-                    <option value="pl">Polonês</option>
-                    <option value="pt-br" selected>Português (Brasil)</option>
+                    <option value="Alemão">Alemão</option>
+                    <option value="Chinês">Chinês</option>
+                    <option value="Coreano">Coreano</option>
+                    <option value="Croata">Croata</option>
+                    <option value="Espanhol">Espanhol</option>
+                    <option value="Italiano">Italiano</option>
+                    <option value="Inglês">Inglês</option>
+                    <option value="Japonês">Japonês</option>
+                    <option value="Polonês">Polonês</option>
+                    <option value="Português Brasileiro" selected>Português (Brasil)</option>
                 </select>
             </div>
             <button class="bg-emerald-500 text-center p-4 rounded-md text-white font-bold hover:bg-emerald-600 active:bg-emerald-700 transition-all" type="submit">SALVAR</button>
@@ -100,7 +69,7 @@
             e.preventDefault()
 
             const configs = {
-                letters: $('#letters').val(),
+                theme: $('#theme').val(),
                 language: $('#language').val()
             }
 
@@ -112,18 +81,18 @@
             }
 
             
-            localStorage.setItem('letters', configs.letters)
+            localStorage.setItem('theme', configs.theme)
             localStorage.setItem('language', configs.language)
         })
 
         $('#configs-forms').ready(function() {
             const configs = {
-                letters: localStorage.getItem('letters'),
+                theme: localStorage.getItem('theme'),
                 language: localStorage.getItem('language'),
                 difficulty: localStorage.getItem('difficulty')
             }
 
-            $('#letters').val(configs.letters)
+            $('#theme').val(configs.theme)
             $('#language').val(configs.language)
 
             // Checando a dificuldade

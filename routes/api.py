@@ -8,17 +8,14 @@ api = Blueprint('api', __name__)
 def check_word():
     word = request.json['word']
     content = request.json['content']
-    print(word, content)
     return ckw(word, content)
 
 
 @api.route('/catch_word', methods=['GET'])
 def catch_word():
-    input_letters = request.args.get('letters')
+    input_theme = request.args.get('theme')
     select_language = request.args.get('language')
     input_difficulty = request.args.get('difficulty')
 
-    #print(f"Letters: {input_letters}, Language: {select_language}, Difficulty: {input_difficulty}")
-
-    return get_gpt_word(input_letters, select_language, input_difficulty)
+    return get_gpt_word(input_theme, select_language, input_difficulty)
 
