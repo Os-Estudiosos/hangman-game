@@ -3,7 +3,7 @@ from os import getenv
 from dotenv import load_dotenv
 
 # Módulos próprios
-from interface import *
+from game import *
 from word_management import *
 
 load_dotenv()  # Carrega as variáveis ambiente
