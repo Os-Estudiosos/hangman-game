@@ -18,14 +18,14 @@ def check_word(palavra, content):
     if(content == temp_s):
         return{"variavel" : "venceu", "index_s" : [] }
     variavel = "false"
-    index_s = []
-    if content in palavra:
-        variavel = "true"
     
+    index_s = []
+        
     index = 0
     
     for char in temp_s:
         if(char == content):
             index_s.append(index)
+            variavel = "true"
         index += 1
     return {"variavel" : variavel, "index_s" : index_s}           
