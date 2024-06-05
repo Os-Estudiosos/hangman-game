@@ -125,6 +125,13 @@
 
             $('#letters').val(configs.letters)
             $('#language').val(configs.language)
+
+            // Checando a dificuldade
+            for (let element of $('input[type="radio"]')) {
+                if (element.value == configs.difficulty) {
+                    element.checked = true
+                }
+            }
         })
     </script>
 </body>
