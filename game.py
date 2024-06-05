@@ -7,8 +7,8 @@ def tira_acento(palavra):
 
 def check_word(palavra, content):
     
-    temp_s = tira_acento(palavra)
-    content = tira_acento(content)
+    temp_s = tira_acento(palavra).lower()
+    content = tira_acento(content).lower()
   
     #cria uma lista com os caracteres sem acento:
     palavra_sem_acentos = []
@@ -29,3 +29,5 @@ def check_word(palavra, content):
             variavel = "true"
         index += 1
     return {"variavel" : variavel, "index_s" : index_s}           
+
+
