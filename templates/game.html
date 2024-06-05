@@ -7,19 +7,210 @@
     <title>Game</title>
 </head>
 <body>
-    <div class="flex items-center flex-col h-[100vh] p-10">
+    <div class="flex items-center flex-col h-[100vh] p-5">
         <header class="flex items-stretch justify-center gap-3">
             <a class="flex items-center justify-center hover:scale-110 transition-all" href="/"><ion-icon class="text-2xl" name="arrow-back-outline"></ion-icon></a>
             <h1 class="text-2xl text-center font-bold">QUE OS JOGOS COMEÇEM</h1>
         </header>
+        <main class="p-4 flex items-center justify-center flex-col">
+            <canvas id="hangman-frame" width="400" height="250" class="border"></canvas>
+            <div class="flex items-center justify-center flex-col gap-5 min-h-24 p-4">
+                <p id="hint-container"></p>
+                <form id="letters-form">
+                    <ul id="letters-container" class="flex items-center justify-center gap-4">
+                    </ul>
+
+                    <div class="flex items-center justify-center gap-1 flex-col">
+                        <input id="letter-input" class="mt-6 border text-lg font-bold border-gray-300 focus:outline-gray-400 rounded-sm w-auto h-10 text-center letter-input" type="text" id="letter-0">
+                        <button type="submit" class="bg-sky-500 text-center p-3 text-sm rounded-md text-white font-bold hover:bg-sky-600 active:bg-sky-700 transition-all">CHECAR LETRA/PALAVRA</button>
+                        <ul id="wrong-letters-list" class="flex items-center justify-center mt-5 gap-5">
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <div id="filter" class="fixed w-full h-full bg-black opacity-40 top-0 left-0" style="display: none;"></div>
+
+        <div id="over-screen" class="bg-white p-3 rounded-md fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2" style="display: none;">
+            <h1 id="over-title" class="text-center text-lg font-bold"></h1>
+            <p id="over-text" class="text-center"></p>
+            <p class="text-center">Você quer tentar de novo ou jogar novamente?</p>
+            <div class="mt-5 flex items-center justify-center gap-3">
+                <a href="/" class="bg-sky-500 text-center p-3 text-sm rounded-md text-white font-bold hover:bg-sky-600 active:bg-sky-700 transition-all">VOLTAR</a>
+                <a href="#" class="bg-rose-500 text-center p-3 text-sm rounded-md text-white font-bold hover:bg-rose-600 active:bg-rose-700 transition-all" onclick="location.reload()">TENTAR DE NOVO</a>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script>
-        $.ajax({
-            url: 'http://http://127.0.0.1:5000/api'
+        /* DESENHAR PARTE DO CORPO NO CANVA E A FORCA */
+        function draw_gibbet() {
+            const c = document.getElementById("hangman-frame")
+            const ctx = c.getContext("2d")
+
+            // Cabo reto
+            ctx.moveTo(130, 20)
+            ctx.lineTo(130, 230)
+
+            // Base
+            ctx.moveTo(100, 230)
+            ctx.lineTo(160, 230)
+
+            // Parte de cima
+            ctx.moveTo(120, 20)
+            ctx.lineTo(180, 20)
+
+            // Parte da corda
+            ctx.moveTo(180, 20)
+            ctx.lineTo(180, 40)
+
+            ctx.stroke()
+        }
+        function draw_body_part(life) {
+            const c = document.getElementById("hangman-frame");
+            const ctx = c.getContext("2d");
+
+            if (life == 5) {
+                // Cabeça
+                ctx.moveTo(200, 60)
+                ctx.arc(180, 60, 20, 0, 2 * Math.PI)
+            } else if (life == 4) {
+                // Corpo
+                ctx.moveTo(180, 80)
+                ctx.lineTo(180, 150)
+            } else if (life == 3) {
+                // Braços
+                ctx.moveTo(180, 80)
+                ctx.lineTo(200, 140)
+            } else if (life == 2) {
+                ctx.moveTo(180, 80)
+                ctx.lineTo(160, 140)
+            } else if (life == 1) {
+                // Pernas
+                ctx.moveTo(180, 150)
+                ctx.lineTo(190, 210)
+            } else if (life == 0) {
+                // Pernas
+                ctx.moveTo(180, 150)
+                ctx.lineTo(170, 210)
+            }
+
+            ctx.stroke()
+        }
+
+        /* FUNÇÃO QUE VAI CHAMAR A PALAVRA DA API */
+        function chamar_palavra() {
+            const response = {
+                word: 'PARALELEPIPEDO',
+                hint: 'Forma geométrica com que todos os ângulos são retos'
+            }
+            const lifes = 6
+
+            localStorage.setItem('actual_word', response.word)
+            localStorage.setItem('lifes', lifes)
+            $('#hint-container').text(response.hint)
+            $('#lifes-container').text(`Quantidade de vidas: ${lifes}`)
+        }
+
+        /* FUNÇÃO QUE VAI CHECAR SE A LETRA ESTÁ NA PALAVRA */
+        function checar_letra(letra_frase) {
+            const palavra = localStorage.getItem('actual_word')
+
+            if (letra_frase.length == 1) {
+                const indices = []
+                for (let i = 0; i < palavra.length; i++) {
+                    if (palavra[i] === letra_frase) {
+                        indices.push(i)
+                    }
+                }
+
+                return indices
+            } else if (letra_frase == palavra) {
+                return ({
+                    win: true
+                })
+            }
+        }
+
+        /* FUNÇÃO QUE COLOCA A QUANTIDADE CORRETA DE INPUTS NA TELA */
+        function set_correct_inputs() {
+            const letters = Number(localStorage.getItem('letters'))
+            
+            for (let i = 0; i<letters; i++) {
+                $('#letters-container').append(`
+                    <li id="letter-${i}" class="border-b border-black text-4xl w-12 h-12 flex items-center justify-center">
+                        
+                    </li>
+                `)
+            }
+        }
+
+        /* FUNÇÃO QUE COLOCA GAME OVER NA TELA */
+        function over(title) {
+            const palavra = localStorage.getItem('actual_word')
+
+            $('#over-screen').show()
+            $('#filter').show()
+            $('#over-text').text(`A palavra era ${palavra}`)
+            $('#over-title').text(title)
+        }
+
+        // Código inicial
+        $('body').ready(function() {
+            chamar_palavra()
+            set_correct_inputs()
+            draw_gibbet()
+        })
+
+        // Quando enviar a letra
+        $('#letters-form').on('submit', function(e) {
+            e.preventDefault()  // Previne de enviar o formulário
+            // Local onde vai checar se a letra está correta
+            const response = checar_letra($('#letter-input').val())  // Checo se a palavra possui a letra
+            let lifes = localStorage.getItem('lifes')  // Pego as vidas no armazenamento local
+
+            /* EASTER EGG */
+            if ($('#letter-input').val() == "CUPINTO") {
+                window.location.href = "https://www.youtube.com/watch?v=3XJCKDB3YtM"
+            }
+
+            // Se o jogador não ganhou
+            if (response.length > 0) {  // Se o jogador acertou alguma letra
+                for (let index of response) {
+                    $(`#letter-${index}`).text($('#letter-input').val())
+                }
+            } else {  // Se o jogador não acertou nenhuma letra
+                localStorage.setItem('lifes', lifes - 1)  // Seto a variável local com 1 valor a menos
+                $('#wrong-letters-list').append(`
+                    <li class="font-bold text-lg">
+                        ${$('#letter-input').val()}
+                    </li>
+                `)
+                $('#lifes-container').text(`Quantidade de vidas: ${lifes-1}`)  // Mudo o texto do html
+                draw_body_part(lifes-1)
+            }
+
+            if (response.win) {  // Se o jogador ganhou
+                over('VOCÊ GANHOU')
+                return
+            } else if (lifes - 1 == 0) {  // Se o jogador perdeu
+                over('VOCÊ PERDEU')
+                return
+            }
+
+            $('#letter-input').val('')
+        })
+
+        // Comportamento dos inputs ao serem clicados
+        $('#letter-input').on('keyup', function() {
+            if (!isNaN(this.value)) {
+                this.value=""
+            } else {
+                this.value = this.value.toUpperCase()
+            }
         })
     </script>
 </body>
