@@ -1,5 +1,7 @@
 import json
 from openai import OpenAI
+from dotenv import load_dotenv
+import os
 
 # Função para ler o arquivo "config.json"
 def read_config():
@@ -12,7 +14,8 @@ def get_gpt_word(letters, language, difficulty):
     read_config()  # Leio o arquivo
 
     # Puxo os dados do Chat GPT, aplicando as variáveis que estão no arquivo .json (letras, idioma, dificuldade)
-    client = OpenAI(api_key= "sk-proj-PAZCG7ysv5iKjU3HTDt5T3BlbkFJsEOhwguL2OglilN0CBSd")  # Usando a chave do arquivo de configuração
+    api_key = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(api_key=api_key)  # Usando a chave do arquivo de configuração
     prompt = [{"role": "user", "content": f"Dê-me uma palavra de {letters} letras em {language} de nível {difficulty} para jogar o jogo da forca e dê uma dica sem usar a palavra"}]
     response = client.chat.completions.create(messages=prompt, model="gpt-3.5-turbo", max_tokens=50, temperature=0)
 
