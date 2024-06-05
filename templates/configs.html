@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Jogo da forca</title>
+</head>
+<body>
+    <div class="flex items-center justify-center flex-col h-[100vh]">
+        <header class="flex items-stretch justify-center gap-3">
+            <a class="flex items-center justify-center hover:scale-110 transition-all" href="/"><ion-icon class="text-2xl" name="arrow-back-outline"></ion-icon></a>
+            <h1 class="text-2xl text-center font-bold">Configurações</h1>
+        </header>
+        <form id="configs-forms" class="flex items-center justify-center flex-col gap-3">
+            <div>
+                <label class="font-bold text-lg" for="difficulty">Dificuldade</label>
+                <ul class="flex items-center justify-center gap-3">
+                    <li class="flex items-center justify-center gap-2">
+                        <input type="radio" value="1" name="difficulty" id="baby-mode">
+                        <label for="baby-mode">Bebezinho</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-emerald-500" type="radio" value="2" name="difficulty" id="easy-mode">
+                        <label for="easy-mode">Fácil</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-orange-500" checked type="radio" value="3" name="difficulty" id="normal-mode">
+                        <label for="normal-mode">Normal</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-red-500" type="radio" value="4" name="difficulty" id="hard-mode">
+                        <label for="hard-mode">Difícil</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-purple-500" type="radio" value="5" name="difficulty" id="fuck-yeah-mode">
+                        <label for="fuck-yeah-mode">Eu sou foda</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="font-bold text-lg" for="letters">Número de Letras</label>
+                <input id="letters" type="number" class="border p-3 rounded-md h-12" min="0">
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="font-bold text-lg" for="language">Idioma</label>
+                <select class="border p-3 rounded-md bg-white h-12" id="language" name="language">
+                    <option value="af">Africâner</option>
+                    <option value="sq">Albanês</option>
+                    <option value="de">Alemão</option>
+                    <option value="am">Amárico</option>
+                    <option value="ar">Árabe</option>
+                    <option value="hy">Armênio</option>
+                    <option value="az">Azerbaijano</option>
+                    <option value="bn">Bengali</option>
+                    <option value="bs">Bósnio</option>
+                    <option value="bg">Búlgaro</option>
+                    <option value="ca">Catalão</option>
+                    <option value="zh">Chinês</option>
+                    <option value="ko">Coreano</option>
+                    <option value="hr">Croata</option>
+                    <option value="da">Dinamarquês</option>
+                    <option value="sk">Eslovaco</option>
+                    <option value="sl">Esloveno</option>
+                    <option value="es">Espanhol</option>
+                    <option value="et">Estoniano</option>
+                    <option value="fi">Finlandês</option>
+                    <option value="fr">Francês</option>
+                    <option value="el">Grego</option>
+                    <option value="he">Hebraico</option>
+                    <option value="hi">Hindi</option>
+                    <option value="hu">Húngaro</option>
+                    <option value="is">Islandês</option>
+                    <option value="id">Indonésio</option>
+                    <option value="it">Italiano</option>
+                    <option value="en">Inglês</option>
+                    <option value="ja">Japonês</option>
+                    <option value="ka">Georgiano</option>
+                    <option value="jv">Javanês</option>
+                    <option value="lv">Letão</option>
+                    <option value="lt">Lituano</option>
+                    <option value="mk">Macedônio</option>
+                    <option value="ms">Malaio</option>
+                    <option value="nl">Holandês</option>
+                    <option value="no">Norueguês</option>
+                    <option value="fa">Persa</option>
+                    <option value="pl">Polonês</option>
+                    <option value="pt-br" selected>Português (Brasil)</option>
+                </select>
+            </div>
+            <button class="bg-emerald-500 text-center p-4 rounded-md text-white font-bold hover:bg-emerald-600 active:bg-emerald-700 transition-all" type="submit">SALVAR</button>
+        </form>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        $('#configs-forms').on('submit', function(e) {
+            e.preventDefault()
+
+            const configs = {
+                letters: $('#letters').val(),
+                language: $('#language').val()
+            }
+
+            // Checando a dificuldade
+            for (let element of $('input[type="radio"]')) {
+                if (element.checked) {
+                    localStorage.setItem('difficulty', element.value)
+                }
+            }
+
+            
+            localStorage.setItem('letters', configs.letters)
+            localStorage.setItem('language', configs.language)
+        })
+
+        $('#configs-forms').ready(function() {
+            const configs = {
+                letters: localStorage.getItem('letters'),
+                language: localStorage.getItem('language'),
+                difficulty: localStorage.getItem('difficulty')
+            }
+
+            $('#letters').val(configs.letters)
+            $('#language').val(configs.language)
+        })
+    </script>
+</body>
+</html>
