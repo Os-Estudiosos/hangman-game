@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Jogo da forca</title>
+</head>
+<body>
+    <div class="flex items-center justify-center flex-col h-[100vh]">
+        <header class="flex items-stretch justify-center gap-3">
+            <a class="flex items-center justify-center hover:scale-110 transition-all" href="/"><ion-icon class="text-2xl" name="arrow-back-outline"></ion-icon></a>
+            <h1 class="text-2xl text-center font-bold">Configurações</h1>
+        </header>
+        <form id="configs-forms" class="flex items-center justify-center flex-col gap-3">
+            <div>
+                <label class="font-bold text-lg" for="difficulty">Dificuldade</label>
+                <ul class="flex items-center justify-center gap-3">
+                    <li class="flex items-center justify-center gap-2">
+                        <input type="radio" value="1" name="difficulty" id="baby-mode">
+                        <label for="baby-mode">Bebezinho</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-emerald-500" type="radio" value="2" name="difficulty" id="easy-mode">
+                        <label for="easy-mode">Fácil</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-orange-500" checked type="radio" value="3" name="difficulty" id="normal-mode">
+                        <label for="normal-mode">Normal</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-red-500" type="radio" value="4" name="difficulty" id="hard-mode">
+                        <label for="hard-mode">Difícil</label>
+                    </li>
+                    <li class="flex items-center justify-center gap-2">
+                        <input class="accent-purple-500" type="radio" value="5" name="difficulty" id="fuck-yeah-mode">
+                        <label for="fuck-yeah-mode">Eu sou foda</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="font-bold text-lg" for="theme">Tema</label>
+                <input id="theme" type="text" class="border p-3 rounded-md h-12">
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="font-bold text-lg" for="language">Idioma</label>
+                <select class="border p-3 rounded-md bg-white h-12" id="language" name="language">
+                    <option value="Alemão">Alemão</option>
+                    <option value="Chinês">Chinês</option>
+                    <option value="Coreano">Coreano</option>
+                    <option value="Croata">Croata</option>
+                    <option value="Espanhol">Espanhol</option>
+                    <option value="Italiano">Italiano</option>
+                    <option value="Inglês">Inglês</option>
+                    <option value="Japonês">Japonês</option>
+                    <option value="Polonês">Polonês</option>
+                    <option value="Português Brasileiro" selected>Português (Brasil)</option>
+                </select>
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="font-bold text-lg" for="api-key">Chave API</label>
+                <input id="api-key" class="border p-3 rounded-md bg-white h-12" type="text">
+            </div>
+            <button class="bg-emerald-500 text-center p-4 rounded-md text-white font-bold hover:bg-emerald-600 active:bg-emerald-700 transition-all" type="submit">SALVAR</button>
+        </form>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        $('#configs-forms').on('submit', function(e) {
+            e.preventDefault()
+
+            const configs = {
+                theme: $('#theme').val(),
+                language: $('#language').val(),
+                api_key: $('#api-key').val()
+            }
+
+            // Checando a dificuldade
+            for (let element of $('input[type="radio"]')) {
+                if (element.checked) {
+                    localStorage.setItem('difficulty', element.value)
+                }
+            }
+            
+            localStorage.setItem('theme', configs.theme)
+            localStorage.setItem('language', configs.language)
+            localStorage.setItem('api-key', configs.api_key)
+        })
+
+        $('#configs-forms').ready(function() {
+            const configs = {
+                theme: localStorage.getItem('theme'),
+                language: localStorage.getItem('language'),
+                difficulty: localStorage.getItem('difficulty'),
+                api_key: localStorage.getItem('api-key')
+            }
+
+            $('#theme').val(configs.theme)
+            $('#language').val(configs.language)
+            $('#api-key').val(configs.api_key)
+
+            // Checando a dificuldade
+            for (let element of $('input[type="radio"]')) {
+                if (element.value == configs.difficulty) {
+                    element.checked = true
+                }
+            }
+        })
+    </script>
+</body>
+</html>
