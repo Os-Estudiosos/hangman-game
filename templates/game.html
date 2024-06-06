@@ -111,7 +111,7 @@
             }
             const response = {}
             await $.ajax({
-                'url': `http://127.0.0.1:5000/api/catch_word?language=${configs.language}&difficulty=${configs.difficulty}&theme=${configs.theme}&api-key=${configs.api_key}`,
+                'url': `{{ api_url }}/api/catch_word?language=${configs.language}&difficulty=${configs.difficulty}&theme=${configs.theme}&api-key=${configs.api_key}`,
                 type: 'GET',
                 dataType: 'json',
                 success: function(res) {
@@ -138,7 +138,7 @@
 
             // Checagem da letra pela a API
             await $.ajax({
-                'url': `http://127.0.0.1:5000/api/check-word`,
+                'url': `{{ API_URL }}/api/check-word`,
                 type: 'POST',
                 contentType: "application/json; charset=utf-8",
                 traditional: true,

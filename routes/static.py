@@ -1,3 +1,5 @@
+from os import getenv
+from dotenv import load_dotenv
 from flask import Blueprint, render_template
 
 static = Blueprint('static', __name__)
@@ -12,4 +14,5 @@ def configs():
 
 @static.route('/game')
 def game():
-    return render_template("game.html")
+    load_dotenv()
+    return render_template("game.html", api_url=getenv('API_URL'))
