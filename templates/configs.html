@@ -57,6 +57,10 @@
                     <option value="Português Brasileiro" selected>Português (Brasil)</option>
                 </select>
             </div>
+            <div class="flex flex-col w-full">
+                <label class="font-bold text-lg" for="api-key">Chave API</label>
+                <input id="api-key" class="border p-3 rounded-md bg-white h-12" type="text">
+            </div>
             <button class="bg-emerald-500 text-center p-4 rounded-md text-white font-bold hover:bg-emerald-600 active:bg-emerald-700 transition-all" type="submit">SALVAR</button>
         </form>
     </div>
@@ -70,7 +74,8 @@
 
             const configs = {
                 theme: $('#theme').val(),
-                language: $('#language').val()
+                language: $('#language').val(),
+                api_key: $('#api-key').val()
             }
 
             // Checando a dificuldade
@@ -79,21 +84,23 @@
                     localStorage.setItem('difficulty', element.value)
                 }
             }
-
             
             localStorage.setItem('theme', configs.theme)
             localStorage.setItem('language', configs.language)
+            localStorage.setItem('api-key', configs.api_key)
         })
 
         $('#configs-forms').ready(function() {
             const configs = {
                 theme: localStorage.getItem('theme'),
                 language: localStorage.getItem('language'),
-                difficulty: localStorage.getItem('difficulty')
+                difficulty: localStorage.getItem('difficulty'),
+                api_key: localStorage.getItem('api-key')
             }
 
             $('#theme').val(configs.theme)
             $('#language').val(configs.language)
+            $('#api-key').val(configs.api_key)
 
             // Checando a dificuldade
             for (let element of $('input[type="radio"]')) {

@@ -16,6 +16,7 @@ def catch_word():
     input_theme = request.args.get('theme')
     select_language = request.args.get('language')
     input_difficulty = request.args.get('difficulty')
+    api_key = request.args.get('api-key')
 
-    return get_gpt_word(input_theme, select_language, input_difficulty)
+    return get_gpt_word(input_theme, select_language, input_difficulty, api_key)
 

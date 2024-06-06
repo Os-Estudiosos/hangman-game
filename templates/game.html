@@ -106,11 +106,12 @@
             const configs = {
                 language: localStorage.getItem('language'),
                 difficulty: localStorage.getItem('difficulty'),
-                theme: localStorage.getItem('theme')
+                theme: localStorage.getItem('theme'),
+                api_key: localStorage.getItem('api-key')
             }
             const response = {}
             await $.ajax({
-                'url': `http://127.0.0.1:5000/api/catch_word?language=${configs.language}&difficulty=${configs.difficulty}&theme=${configs.theme}`,
+                'url': `http://127.0.0.1:5000/api/catch_word?language=${configs.language}&difficulty=${configs.difficulty}&theme=${configs.theme}&api-key=${configs.api_key}`,
                 type: 'GET',
                 dataType: 'json',
                 success: function(res) {
@@ -199,6 +200,10 @@
             /* EASTER EGG */
             if ($('#letter-input').val() == "CUPINTO") {
                 window.location.href = "https://www.youtube.com/watch?v=3XJCKDB3YtM"
+            } else if ($('#letter-input').val() == "BUENO") {
+                window.location.href = "https://www.youtube.com/playlist?list=PLFVUrXYB__lbg2ttKhleZbLfXABwtx2ni"
+            } else if ($('#letter-input').val() == "SILLAS") {
+                window.location.href = "https://www.youtube.com/playlist?list=PLHz_AreHm4dkZ9-atkcmcBaMZdmLHft8n"
             }
 
             // Se o jogador não ganhou
