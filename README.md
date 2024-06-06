@@ -16,7 +16,7 @@ Não conseguimos a tempo colocar em um host para vocês acessarem apenas com um 
 ```
 Arquivo.env:
 
-BACK_URL=http://127.0.0.1:5000
+API_URL=http://127.0.0.1:5000
 ```
 Peço para fazer isso pois não sei se é a mesma url em todos os computadores, as vezes pode trocar a porta também, peço desculpas
 
